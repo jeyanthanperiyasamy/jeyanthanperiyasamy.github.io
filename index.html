@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout with PKCE Flow</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header {
+      background: #005f73;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    p {
+      line-height: 1.6;
+    }
+    .info {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e9ecef;
+      border-radius: 5px;
+    }
+    button {
+      background: #008891;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #005f73;
+    }
+  </style>
+  <script>
+    // Helper function to generate a random string of given length.
+    function generateRandomString(length) {
+      const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += charset.charAt(Math.floor(Math.random() * charset.length));
+      }
+      return result;
+    }
+
+    // Generate the code challenge from the code verifier using SHA-256.
+    async function generateCodeChallenge(codeVerifier) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(codeVerifier);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const base64String = btoa(String.fromCharCode(...hashArray));
+      // Convert Base64 to Base64URL by replacing characters and removing padding.
+      return base64String
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+    }
+
+    // Redirect to the checkout URL with PKCE parameters.
+    async function redirectToCheckout() {
+      // Phone number (customize as needed)
+      const phoneNumber = "1234567890";
+      
+      // Generate a code verifier and corresponding code challenge.
+      const codeVerifier = generateRandomString(128);
+      const codeChallenge = await generateCodeChallenge(codeVerifier);
+      
+      // Store the code verifier in session storage for later use during token exchange.
+      sessionStorage.setItem("pkce_code_verifier", codeVerifier);
+      
+      // Generate a state parameter for CSRF protection.
+      const state = generateRandomString(16);
+      sessionStorage.setItem("pkce_state", state);
+      
+      // Construct the checkout URL with query parameters.
+      const baseUrl = "https://paypal.com/checkout";
+      const url = `${baseUrl}?phone=${encodeURIComponent(phoneNumber)}&code_challenge=${encodeURIComponent(codeChallenge)}&state=${encodeURIComponent(state)}`;
+      
+      // Redirect to the checkout URL (which should launch the Android/iOS instant app).
+      window.location.href = url;
+    }
+
+    // When the page is loaded after redirection from the instant app, complete the checkout.
+    function completeCheckout() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const returnedState = urlParams.get('state');
+      
+      if (code && returnedState) {
+        const storedState = sessionStorage.getItem("pkce_state");
+        if (returnedState !== storedState) {
+          console.error("Invalid state returned. Potential CSRF detected.");
+          return;
+        }
+        
+        // Retrieve the stored code_verifier needed for the final token exchange on your server.
+        const codeVerifier = sessionStorage.getItem("pkce_code_verifier");
+        
+        // Here you would typically send the 'code' and 'codeVerifier' to your backend server
+        // to exchange them for access tokens and complete the checkout process.
+        console.log("Checkout complete with code:", code, "and code_verifier:", codeVerifier);
+        
+        // Example server call (uncomment and customize):
+        // fetch('/finalize-checkout', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ code: code, codeVerifier: codeVerifier })
+        // })
+        // .then(response => response.json())
+        // .then(data => {
+        //   // Process server response (e.g., display confirmation, etc.)
+        //   console.log("Checkout finalized", data);
+        // })
+        // .catch(error => console.error('Error finalizing checkout:', error));
+      }
+    }
+
+    // Check for the authorization code on page load.
+    window.onload = function() {
+      completeCheckout();
+    };
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Welcome to Our Checkout</h1>
+  </header>
+  <div class="container">
+    <h1>Complete Your Purchase</h1>
+    <p>
+      Click the button below to initiate the checkout process. Our secure flow uses PKCE to ensure that your transaction is safe and secure.
+    </p>
+    <div class="info">
+      <p>
+        After clicking the checkout button, you will be redirected to an instant app (Android or iOS) to verify your phone number and complete authentication. Once verified, you'll be returned to this page to finalize your checkout.
+      </p>
+    </div>
+    <button onclick="redirectToCheckout()">Checkout</button>
+  </div>
+</body>
+</html>
