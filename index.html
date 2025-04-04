@@ -96,7 +96,7 @@
       sessionStorage.setItem("pkce_state", state);
       
       // Construct the checkout URL with query parameters.
-      const baseUrl = "https://paypal.com/checkout";
+      const baseUrl = "https://appclip-sand.vercel.app/checkout";
       const url = `${baseUrl}?phone=${encodeURIComponent(phoneNumber)}&code_challenge=${encodeURIComponent(codeChallenge)}&state=${encodeURIComponent(state)}`;
       
       // Redirect to the checkout URL (which should launch the Android/iOS instant app).
