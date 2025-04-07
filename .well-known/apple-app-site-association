@@ -9,5 +9,11 @@
         "paths": [ "/clip", "/checkout", "/login" ]
       }
     ]
+  },
+"webcredentials": {
+    "apps": [
+      "727K56WV67.com.paypal.ppclient-development",
+      "727K56WV67.com.paypal.ppclient-development.veniceappclips"
+    ]
   }
 }
