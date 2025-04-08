@@ -1,5 +1,20 @@
 {
+  "rewrites": [
+    {
+      "source": "/checkout",
+      "destination": "/checkout.html"
+    }
+  ],
   "headers": [
+    {
+      "source": "/checkout.html",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html"
+        }
+      ]
+    },
     {
       "source": "/.well-known/apple-app-site-association",
       "headers": [
