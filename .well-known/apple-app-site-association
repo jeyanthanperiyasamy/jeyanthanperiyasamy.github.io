@@ -1,11 +1,15 @@
 {
   "appclips": {
-    "apps": ["727K56WV67.com.paypal.ppclient-development.veniceappclips"]
+    "apps": ["727K56WV67.com.paypal.ppclient-development.veniceappclips", "7X57TQ2P9T.com.jey.ppclient-prod.appclip"]
   },
   "applinks": {
     "details": [
       {
         "appID": "727K56WV67.com.paypal.ppclient-development",
+        "paths": [ "/clip", "/checkout", "/login" ]
+      },
+      {
+        "appID": "7X57TQ2P9T.com.jey.ppclient-prod",
         "paths": [ "/clip", "/checkout", "/login" ]
       }
     ]
