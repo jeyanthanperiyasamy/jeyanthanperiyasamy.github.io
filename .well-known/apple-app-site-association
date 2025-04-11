@@ -17,7 +17,9 @@
 "webcredentials": {
     "apps": [
       "727K56WV67.com.paypal.ppclient-development",
-      "727K56WV67.com.paypal.ppclient-development.veniceappclips"
+      "727K56WV67.com.paypal.ppclient-development.veniceappclips",
+      "7X57TQ2P9T.com.jey.ppclient-prod",
+      "7X57TQ2P9T.com.jey.ppclient-prod.appclip"
     ]
   }
 }
