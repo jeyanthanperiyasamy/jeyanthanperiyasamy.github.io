@@ -1,6 +1,6 @@
 {
   "appclips": {
-    "apps": ["727K56WV67.com.paypal.ppclient-development.veniceappclips", "7X57TQ2P9T.com.jey.ppclient-prod.appclip"]
+    "apps": ["727K56WV67.com.paypal.ppclient-development.veniceappclips", "7X57TQ2P9T.com.jey.ppclient-prod.appclip", "S6QU2SLZP2.com.jey.ppclient-prod.appclip"]
   },
   "applinks": {
     "details": [
@@ -11,6 +11,10 @@
       {
         "appID": "7X57TQ2P9T.com.jey.ppclient-prod",
         "paths": [ "/clip", "/checkout", "/login" ]
+      },
+{
+        "appID": "S6QU2SLZP2.com.jey.ppclient-prod",
+        "paths": [ "/clip", "/checkout", "/login" ]
       }
     ]
   },
@@ -19,7 +23,9 @@
       "727K56WV67.com.paypal.ppclient-development",
       "727K56WV67.com.paypal.ppclient-development.veniceappclips",
       "7X57TQ2P9T.com.jey.ppclient-prod",
-      "7X57TQ2P9T.com.jey.ppclient-prod.appclip"
+      "7X57TQ2P9T.com.jey.ppclient-prod.appclip",
+       "S6QU2SLZP2.com.jey.ppclient-prod",
+      "S6QU2SLZP2.com.jey.ppclient-prod.appclip"
     ]
   }
 }
