@@ -1,0 +1,22 @@
+{
+  "name": "mock-push-server",
+  "version": "1.0.0",
+  "description": "Mock server to send and poll push notification approvals",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node api/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.4",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.25",
+    "@types/uuid": "^9.0.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.3"
+  }
+}

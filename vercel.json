@@ -3,7 +3,8 @@
     {
       "source": "/checkout",
       "destination": "/checkout.html"
-    }
+    },
+    { "source": "/(.*)", "destination": "/api" }
   ],
   "headers": [
     {
