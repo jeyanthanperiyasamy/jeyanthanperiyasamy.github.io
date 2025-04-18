@@ -4,11 +4,24 @@
       "source": "/checkout",
       "destination": "/checkout.html"
     },
+     {
+      "source": "/customer",
+      "destination": "/customer.html"
+    },
     { "source": "/(.*)", "destination": "/api" }
   ],
   "headers": [
     {
       "source": "/checkout.html",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html"
+        }
+      ]
+    },
+    {
+      "source": "/customer.html",
       "headers": [
         {
           "key": "Content-Type",
