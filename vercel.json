@@ -4,6 +4,10 @@
       "source": "/checkout",
       "destination": "/checkout.html"
     },
+    {
+      "source": "/clip",
+      "destination": "/checkout.html"
+    },
      {
       "source": "/customer",
       "destination": "/customer.html"
