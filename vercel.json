@@ -4,6 +4,14 @@
       "source": "/checkout",
       "destination": "/checkout.html"
     },
+     {
+      "source": "/login/sna",
+      "destination": "/customer.html"
+    },
+     {
+      "source": "/checkout/sna",
+      "destination": "/checkout.html"
+    },
     {
       "source": "/clip",
       "destination": "/checkout.html"
