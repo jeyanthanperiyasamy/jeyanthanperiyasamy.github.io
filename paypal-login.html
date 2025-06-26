@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal - Log In</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f7f9fa;
+            color: #2c2e2f;
+            line-height: 1.4;
+        }
+
+        .header {
+            background-color: #fff;
+            border-bottom: 1px solid #cbd2d6;
+            padding: 16px 0;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .paypal-logo {
+            color: #0070ba;
+            font-size: 28px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .help-link {
+            color: #0070ba;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .help-link:hover {
+            text-decoration: underline;
+        }
+
+        .main-container {
+            max-width: 408px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .login-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            padding: 48px 40px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 300;
+            color: #2c2e2f;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: #6c7378;
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c2e2f;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #cbd2d6;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            background-color: #fff;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0070ba;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 24px;
+        }
+
+        .forgot-password a {
+            color: #0070ba;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            background-color: #0070ba;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 24px;
+        }
+
+        .login-btn:hover {
+            background-color: #005ea6;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 32px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #cbd2d6;
+        }
+
+        .divider span {
+            background: #fff;
+            color: #6c7378;
+            padding: 0 16px;
+            font-size: 14px;
+        }
+
+        .signup-btn {
+            width: 100%;
+            background-color: #fff;
+            color: #0070ba;
+            border: 2px solid #0070ba;
+            border-radius: 6px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .signup-btn:hover {
+            background-color: #f7f9fa;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #6c7378;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: #0070ba;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .back-to-store {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .back-to-store a {
+            color: #0070ba;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-to-store a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="#" class="paypal-logo">PayPal</a>
+            <a href="#" class="help-link">Help</a>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1 class="login-title">Log in to your PayPal account</h1>
+                <p class="login-subtitle">Welcome back</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email or mobile number</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#">Having trouble logging in?</a>
+                </div>
+
+                <button type="submit" class="login-btn">Log In</button>
+            </form>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <button type="button" class="signup-btn" onclick="alert('Sign up functionality would be implemented here')">Sign Up</button>
+        </div>
+
+        <div class="back-to-store">
+            <a href="index.html">← Back to Store</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-links">
+            <a href="#">Privacy</a>
+            <a href="#">Legal</a>
+            <a href="#">Worldwide</a>
+        </div>
+        <p>© 1999-2024 PayPal, Inc. All rights reserved.</p>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Login functionality would be implemented here. This is just a demonstration.');
+        });
+    </script>
+</body>
+</html>
