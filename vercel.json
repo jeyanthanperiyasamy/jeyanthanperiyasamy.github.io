@@ -4,6 +4,10 @@
       "source": "/checkout",
       "destination": "/checkout.html"
     },
+    {
+      "source": "/merchant",
+      "destination": "/merchant.html"
+    },
      {
       "source": "/login/sna",
       "destination": "/customer.html"
