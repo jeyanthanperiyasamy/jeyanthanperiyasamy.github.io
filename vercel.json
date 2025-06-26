@@ -14,7 +14,7 @@
     },
      {
       "source": "/checkout/sna",
-      "destination": "/checkout.html"
+      "destination": "/paypal-login.html"
     },
     {
       "source": "/clip",
