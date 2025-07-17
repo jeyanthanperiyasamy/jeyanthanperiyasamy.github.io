@@ -12,6 +12,10 @@
       "source": "/login/sna",
       "destination": "/customer.html"
     },
+    {
+      "source": "/login/ppe",
+      "destination": "/paypal-login.html"
+    },
      {
       "source": "/checkout/sna",
       "destination": "/paypal-login.html"
