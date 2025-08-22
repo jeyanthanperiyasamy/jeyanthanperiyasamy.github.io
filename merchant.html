@@ -46,23 +46,30 @@
     .pp-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;border:0;cursor:pointer;font-weight:900;background:linear-gradient(45deg,#0070ba,#003087);color:#fff;box-shadow:0 8px 20px rgba(0,112,186,.35)}
     .pp-btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
     .toast{position:fixed;top:16px;right:16px;background:var(--red);color:#fff;padding:12px 16px;border-radius:10px;font-weight:900;box-shadow:var(--shadow);transform:translateX(120%);transition:transform .3s ease;z-index:90}
+
     /* Chat */
-    .chat-panel{position:fixed;right:18px;bottom:18px;width:min(420px,94vw);max-height:74vh;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;z-index:70}
+    .chat-fab{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:999px;border:0;background:var(--blue);color:#fff;font-size:22px;box-shadow:var(--shadow);z-index:65;cursor:pointer}
+    .chat-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:60}
+    .chat-backdrop.show{opacity:1;pointer-events:auto}
+    .chat-panel{position:fixed;right:20px;bottom:80px;width:350px;max-height:70vh;display:none;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 4px 20px rgba(0,0,0,.2);transform:translateY(10px);opacity:0;transition:transform .2s ease,opacity .2s ease;z-index:70}
+    .chat-panel.open{transform:translateY(0);opacity:1}
     .chat-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--line);background:#f9fafb}
-    .chat-header h3{margin:0;font-size:1rem;color:var(--blue)}
     .chat-body{padding:12px;overflow-y:auto;display:grid;gap:10px}
+    .chat-input{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}
+    .chat-input input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+    .chat-input button{padding:10px 14px;border-radius:10px;border:0;font-weight:800;background:var(--blue);color:#fff;cursor:pointer}
     .msg{padding:10px 12px;border-radius:12px;width:fit-content;max-width:85%;white-space:pre-wrap}
     .msg.user{background:#e8f1fb;justify-self:end}
     .msg.bot{background:#f3f4f6}
-    .msg .small{font-size:.8rem;color:var(--muted)}
     .product-chip{display:inline-grid;gap:6px;padding:10px;border:1px solid var(--line);border-radius:12px;margin:6px 6px 0 0;background:#fff}
     .chip-title{font-weight:700}
     .chip-price{color:var(--red);font-weight:800}
     .pp-inline{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;background:linear-gradient(45deg,#0070ba,#003087);color:#fff;font-weight:800;text-decoration:none;box-shadow:var(--shadow)}
     .pp-inline:hover{filter:brightness(1.05);transform:translateY(-1px)}
-    .chat-input{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}
-    .chat-input input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
-    .chat-input button{padding:10px 14px;border-radius:10px;border:0;font-weight:800;background:var(--blue);color:#fff;cursor:pointer}
+    @media (max-width:768px){
+      .chat-panel{left:0;right:0;bottom:0;width:100%;max-height:65vh;border-radius:16px 16px 0 0}
+      .chat-header{cursor:grab}
+    }
   </style>
 </head>
 <body>
@@ -73,6 +80,7 @@
       <button id="openCart" class="cart-btn">🛒<span id="cartCount" class="cart-count">0</span></button>
     </div>
   </div>
+
   <header>
     <h1>Tesco Collection</h1>
     <p>Everyday groceries and trusted brands — add to cart and pay with PayPal directly.</p>
@@ -88,9 +96,14 @@
 
   <div id="toast" class="toast">Added to cart</div>
 
-  <!-- Chat widget (open by default) -->
+  <!-- Chat UI -->
+  <button id="chatFab" class="chat-fab" aria-label="Open chat">💬</button>
+  <div id="chatBackdrop" class="chat-backdrop" aria-hidden="true"></div>
   <div id="chatPanel" class="chat-panel" role="dialog" aria-modal="true" aria-labelledby="chatTitle">
-    <div class="chat-header"><h3 id="chatTitle">Shopping Assistant</h3></div>
+    <div class="chat-header">
+      <h3 id="chatTitle" style="margin:0;font-size:1rem;color:#00539f">Shopping Assistant</h3>
+      <button id="chatClose" class="cart-btn" style="padding:6px 8px">✕</button>
+    </div>
     <div id="chatBody" class="chat-body"></div>
     <form id="chatForm" class="chat-input">
       <input id="chatInput" type="text" placeholder="Try: snacks under $5 or fruit" autocomplete="off" />
@@ -106,14 +119,14 @@
     for (let i = 1; i <= 50; i++) {
       const cat = categories[i % categories.length];
       const icon = icons[i % icons.length];
-      PRODUCTS.push({ id: 'P' + i, brand: 'TESCO', name: `Product ${i}`, icon, unit: '1 unit', price: (Math.random() * 20 + 1).toFixed(2) - 0, category: cat });
+      PRODUCTS.push({ id:'P'+i, brand:'TESCO', name:`Product ${i}`, icon, unit:'1 unit', price:(Math.random()*20+1).toFixed(2)-0, category:cat });
     }
 
     // Grid
     const grid = document.getElementById('grid');
-    function card(p) {
-      const el = document.createElement('article');
-      el.className = 'card';
+    function card(p){
+      const el=document.createElement('article');
+      el.className='card';
       el.innerHTML = `
         <div class="media">${p.icon}</div>
         <div class="meta">
@@ -127,39 +140,35 @@
         </div>`;
       return el;
     }
-    function render() { grid.innerHTML = ''; PRODUCTS.forEach(p => grid.appendChild(card(p))); }
+    function render(){ grid.innerHTML=''; PRODUCTS.forEach(p=>grid.appendChild(card(p))); }
     render();
 
     // PayPal stage URL (mock)
-    const PAYPAL_URL = 'https://www.stage2d0068.stage.paypal.com/checkoutweb/?token=EC-52C48335RP6380056&modxo_redirect_reason=test&dumbledoreEligible=1';
-    function generatePayPalUrl(items) {
+    const PAYPAL_URL='https://www.stage2d0068.stage.paypal.com/checkoutweb/?token=EC-52C48335RP6380056&modxo_redirect_reason=test&dumbledoreEligible=1';
+    function generatePayPalUrl(items){
       const enriched = items.map(it => {
-        const p = PRODUCTS.find(x => x.id === it.id) || {};
-        return { id: it.id, name: p.name || it.id, qty: it.qty || 1, price: +(p.price || 0) };
+        const p = PRODUCTS.find(x=>x.id===it.id) || {};
+        return { id: it.id, name: p.name || it.id, qty: it.qty||1, price: +(p.price||0) };
       });
-      const total = enriched.reduce((s, i) => s + i.price * i.qty, 0);
-      const payload = encodeURIComponent(JSON.stringify({ items: enriched, total: +total.toFixed(2) }));
+      const total = enriched.reduce((s,i)=> s + i.price*i.qty, 0);
+      const payload = encodeURIComponent(JSON.stringify({ items:enriched, total:+total.toFixed(2) }));
       return `${PAYPAL_URL}&mock_payload=${payload}`;
     }
 
     // Cart
-    const cart = new Map();
-    const cartCountEl = document.getElementById('cartCount');
-    const cartList = document.getElementById('cartList');
-    const checkoutTotal = document.getElementById('checkoutTotal');
-    function money(n){ return `$${n.toFixed(2)}` }
-    function calc(){ let items=0,total=0; cart.forEach((q,id)=>{ const p=PRODUCTS.find(x=>x.id===id); items+=q; total+=q*p.price; }); return {items,total}; }
+    const cart=new Map();
+    const cartCountEl=document.getElementById('cartCount');
+    const cartList=document.getElementById('cartList');
+    const checkoutTotal=document.getElementById('checkoutTotal');
+    function money(n){return `$${n.toFixed(2)}`;}
+    function calc(){let items=0,total=0; cart.forEach((q,id)=>{const p=PRODUCTS.find(x=>x.id===id); items+=q; total+=q*p.price;}); return {items,total};}
     function update(){
       const {items,total}=calc();
-      cartCountEl.textContent = items;
-      checkoutTotal.textContent = money(total);
-      cartList.innerHTML = '';
-      cart.forEach((q,id)=>{
-        const p = PRODUCTS.find(x=>x.id===id);
-        const row = document.createElement('div');
-        row.className = 'cart-item';
-        row.innerHTML = `
-          <div>${p.icon} ${p.name}</div>
+      cartCountEl.textContent=items; checkoutTotal.textContent=money(total); cartList.innerHTML='';
+      cart.forEach((q,id)=>{const p=PRODUCTS.find(x=>x.id===id);
+        const row=document.createElement('div');
+        row.className='cart-item';
+        row.innerHTML=`<div>${p.icon} ${p.name}</div>
           <div class="qty">
             <button data-act="dec" data-id="${id}">-</button>
             <span>${q}</span>
@@ -170,22 +179,23 @@
       });
     }
     function renderPayPalButton(){
-      const c = document.getElementById('paypal-button-container');
+      const c=document.getElementById('paypal-button-container');
       c.innerHTML = '<button id="ppbtn" class="pp-btn" type="button">Pay with PayPal</button>';
       document.getElementById('ppbtn').addEventListener('click', ()=>{
-        const val = calc().total; if(val<=0){ alert('Your cart is empty.'); return; }
-        window.location.href = generatePayPalUrl(Array.from(cart.entries()).map(([id,qty])=>({id,qty})));
+        const val=calc().total; if(val<=0){ alert('Your cart is empty.'); return; }
+        const items = Array.from(cart.entries()).map(([id,qty])=>({id,qty}));
+        window.location.href = generatePayPalUrl(items);
       });
     }
     function toast(msg){
-      const t=document.getElementById('toast'); t.textContent='✓ '+msg; t.style.transform='translateX(0)';
+      const t=document.getElementById('toast');
+      t.textContent='✓ '+msg; t.style.transform='translateX(0)';
       setTimeout(()=>t.style.transform='translateX(120%)',2000);
     }
     grid.addEventListener('click', e=>{
       if(e.target.classList.contains('add')){
-        const id = e.target.dataset.id;
-        cart.set(id,(cart.get(id)||0)+1); update();
-        const p = PRODUCTS.find(x=>x.id===id); toast(p.name+' added');
+        const id=e.target.dataset.id; cart.set(id,(cart.get(id)||0)+1); update();
+        const p=PRODUCTS.find(x=>x.id===id); toast(p.name+' added');
       }
     });
     cartList.addEventListener('click', e=>{
@@ -195,19 +205,22 @@
     renderPayPalButton(); update();
 
     // Chat
-    const chatBody = document.getElementById('chatBody');
-    const chatForm = document.getElementById('chatForm');
-    const chatInput = document.getElementById('chatInput');
+    const chatFab=document.getElementById('chatFab');
+    const chatPanel=document.getElementById('chatPanel');
+    const chatBackdrop=document.getElementById('chatBackdrop');
+    const chatClose=document.getElementById('chatClose');
+    const chatBody=document.getElementById('chatBody');
+    const chatForm=document.getElementById('chatForm');
+    const chatInput=document.getElementById('chatInput');
 
     function addMsg(text, who='bot'){
-      const el = document.createElement('div');
-      el.className = `msg ${who}`;
-      el.innerHTML = text;
+      const el=document.createElement('div');
+      el.className=`msg ${who}`;
+      el.innerHTML=text;
       chatBody.appendChild(el);
-      chatBody.scrollTop = chatBody.scrollHeight;
+      chatBody.scrollTop=chatBody.scrollHeight;
       return el;
     }
-
     function productChips(list){
       return list.map(p=>{
         const buyUrl = generatePayPalUrl([{id:p.id, qty:1}]);
@@ -219,46 +232,66 @@
         </div>`;
       }).join('');
     }
-
     function bootChat(){
+      if(chatBody.dataset.boot) return;
+      chatBody.dataset.boot='1';
       const picks = PRODUCTS.slice(0,6);
       addMsg(`<b>Hi! I can find products and check you out with PayPal.</b><br>Ask me things like <i>snacks under $5</i> or <i>fruit</i>.<div style="margin-top:6px">${productChips(picks)}</div>`, 'bot');
     }
-
     function filterProducts(q){
-      const query = (q||'').toLowerCase();
-      let list = PRODUCTS.slice();
-      // price: under X
-      if(query.includes('under')){
-        const nums = query.match(/[0-9.]+/g);
-        if(nums && nums.length){ const cap = parseFloat(nums[0]); if(!Number.isNaN(cap)) list = list.filter(p=>p.price <= cap); }
-      }
-      // category keyword
-      const cats = categories.map(c=>c.toLowerCase());
-      for(const c of cats){ if(query.includes(c)){ list = list.filter(p=>p.category.toLowerCase()===c); break; } }
-      // free text tokens
-      const cleaned = query.replace(/[0-9.$]/g,' ').replace(/\b(show|list|find|products|please|and|in|under)\b/g,' ');
-      const tokens = cleaned.split(/\s+/).filter(Boolean);
-      if(tokens.length){ list = list.filter(p=> tokens.every(t => (`${p.name} ${p.category}`).toLowerCase().includes(t))); }
+      const query=(q||'').toLowerCase();
+      let list=PRODUCTS.slice();
+      const mUnder=query.match(/under\s*\$?(\d+(?:\.\d+)?)/);
+      if(mUnder){ const cap=parseFloat(mUnder[1]); list=list.filter(p=>p.price<=cap); }
+      const cats=categories.map(c=>c.toLowerCase());
+      for(const c of cats){ if(query.includes(c)){ list=list.filter(p=>p.category.toLowerCase()===c); break; } }
+      const cleaned=query.replace(/under\s*\$?\d+(?:\.\d+)?/,'').replace(/[^\w\s]/g,' ');
+      const tokens=cleaned.split(/\s+/).filter(Boolean);
+      if(tokens.length){ list=list.filter(p=>tokens.every(t=>(`${p.name} ${p.category}`).toLowerCase().includes(t))); }
       return list.slice(0,8);
     }
-
     function renderResults(list, prompt){
       if(!list.length){ addMsg(`No matches for <b>${prompt}</b>. Try another query.`, 'bot'); return; }
-      const allUrl = generatePayPalUrl(list.map(p=>({id:p.id, qty:1})));
-      addMsg(`I found <b>${list.length}</b> items for <b>${prompt}</b>.<div style="margin:8px 0 10px"><a class="pp-inline" href="${allUrl}" target="_self">Pay for all shown with PayPal</a></div><div>${productChips(list)}</div>`, 'bot');
+      const allUrl=generatePayPalUrl(list.map(p=>({id:p.id, qty:1})));
+      addMsg(`I found <b>${list.length}</b> items for <b>${prompt}</b>.
+        <div style="margin:8px 0 10px"><a class="pp-inline" href="${allUrl}" target="_self">Pay for all shown with PayPal</a></div>
+        <div>${productChips(list)}</div>`, 'bot');
     }
 
-    chatForm.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const text = chatInput.value.trim(); if(!text) return;
-      addMsg(text, 'user'); chatInput.value='';
-      const results = filterProducts(text);
-      renderResults(results, text);
-    });
+    function openChat(){
+      chatPanel.style.display='flex';
+      requestAnimationFrame(()=>{ chatPanel.classList.add('open'); chatBackdrop.classList.add('show'); });
+      bootChat();
+      chatInput.focus();
+    }
+    function closeChat(){
+      chatPanel.classList.remove('open'); chatBackdrop.classList.remove('show');
+      setTimeout(()=>{ chatPanel.style.display='none'; }, 200);
+    }
 
-    // Start chat open with greeting
-    window.addEventListener('load', ()=>{ bootChat(); chatInput.focus(); });
+    if(chatFab) chatFab.addEventListener('click', openChat);
+    if(chatClose) chatClose.addEventListener('click', closeChat);
+    if(chatBackdrop) chatBackdrop.addEventListener('click', closeChat);
+
+    // Swipe-to-close (mobile Safari friendly)
+    let startY=null, currentY=null, dragging=false;
+    chatPanel.addEventListener('touchstart',(e)=>{
+      if(e.touches.length!==1) return;
+      startY=e.touches[0].clientY; dragging=true; chatPanel.style.transition='none';
+    });
+    chatPanel.addEventListener('touchmove',(e)=>{
+      if(!dragging) return;
+      currentY=e.touches[0].clientY;
+      const dy=Math.max(0, currentY-startY);
+      chatPanel.style.transform=`translateY(${dy}px)`;
+    });
+    chatPanel.addEventListener('touchend',()=>{
+      if(!dragging) return;
+      dragging=false; chatPanel.style.transition='';
+      const dy=Math.max(0,(currentY||0)-(startY||0));
+      if(dy>120){ closeChat(); chatPanel.style.transform=''; }
+      else { chatPanel.style.transform=''; chatPanel.classList.add('open'); }
+    });
   </script>
 </body>
 </html>
